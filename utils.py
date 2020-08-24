@@ -6,45 +6,67 @@ __all__ = []
 
 import os
 
-from sktime.utils.load_data import load_from_tsfile_to_dataframe
+import numpy as np
 from sktime.utils.data_container import nested_to_3d_numpy
+from sktime.utils.load_data import load_from_tsfile_to_dataframe
 
 
-def load_data():
+def load_data(split=None):
     """Load time series classification data from Ford Classification
     Competition at 2008 IEEE World Congress on Computational Intelligence [1].
 
+    Parameters
+    ----------
+    split : str{"train", "test"}, optional (default=None)
+        * If "train", returns training set
+        * If "test", returns test set
+        * If None, returns both concatenated training and test set
+
     Returns
     -------
-    X_train : np.array
-        Training set features
-    X_test : np.array
-        Test set features
-    y_train : np.array
-        Training set target variable
-    y_test : np.array
-        Test set target variable
+    X : np.array
+        Features variables
+    y : np.array
+        Target variables
 
     References
     ----------
     [1] http://timeseriesclassification.com/description.php?Dataset=FordA
     """
+    # check split value for loading training and test set separately
+    allowed_splits = ("train", "test")
+
     # set paths
     DATASET = "FordA"
     PATH = "data/"
 
+    def _load_split(split):
+        """Helper function to load split"""
+        file = os.path.join(PATH, DATASET + f"_{split.upper()}.ts")
+        X, y = load_from_tsfile_to_dataframe(file)
+        X = nested_to_3d_numpy(X).squeeze(axis=1)
+        return X, y
+
     # loads data into nested format
-    X_train, y_train = load_from_tsfile_to_dataframe(
-        os.path.join(PATH, DATASET + "_TRAIN.ts"))
-    X_test, y_test = load_from_tsfile_to_dataframe(
-        os.path.join(PATH, DATASET + "_TEST.ts"))
+    if split in allowed_splits:
+        return _load_split(split)
 
-    # convert to 2d array
-    X_train = nested_to_3d_numpy(X_train).squeeze(axis=1)
-    X_test = nested_to_3d_numpy(X_test).squeeze(axis=1)
+    # if no split is given, load both training and test set
+    elif split is None:
+        Xs = []
+        ys = []
+        for split in allowed_splits:
+            X, y = _load_split(split)
+            Xs.append(X)
+            ys.append(y)
 
-    # return data
-    return X_train, X_test, y_train, y_test
+        X = np.vstack(Xs)
+        y = np.hstack(ys)
+        return X, y
+
+    else:
+        raise ValueError(f"`split` must be one of {allowed_splits}, "
+                         f"but found: {split}")
 
 
 class FourierTransformer:
