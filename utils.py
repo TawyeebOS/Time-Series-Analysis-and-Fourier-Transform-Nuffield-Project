@@ -106,7 +106,7 @@ class FourierTransformer:
         ----------
         y : a pandas dataframe of shape = [n_samples, num_dims]
             The training input samples.
-
+        
         Returns
         -------
         df: a pandas data frame of shape = [num_intervals, num_dims]
