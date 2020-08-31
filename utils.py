@@ -10,7 +10,6 @@ import numpy as np
 from sktime.utils.data_container import nested_to_3d_numpy
 from sktime.utils.load_data import load_from_tsfile_to_dataframe
 
-
 def load_data(split=None):
     """Load time series classification data from Ford Classification
     Competition at 2008 IEEE World Congress on Computational Intelligence [1].
