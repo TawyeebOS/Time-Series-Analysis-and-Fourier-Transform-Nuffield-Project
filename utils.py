@@ -111,3 +111,7 @@ class FourierTransformer:
         df: a pandas data frame of shape = [num_intervals, num_dims]
         """
         pass
+
+def powerspectrum(X):
+    Xt = np.fft.fft(X)
+    return np.abs(Xt) ** 2
