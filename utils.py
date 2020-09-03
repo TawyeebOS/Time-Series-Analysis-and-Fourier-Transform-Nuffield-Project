@@ -9,6 +9,8 @@ import os
 import numpy as np
 from sktime.utils.data_container import nested_to_3d_numpy
 from sktime.utils.load_data import load_from_tsfile_to_dataframe
+from sklearn.base import BaseEstimator, TransformerMixin
+
 
 def load_data(split=None):
     """Load time series classification data from Ford Classification
@@ -68,50 +70,43 @@ def load_data(split=None):
                          f"but found: {split}")
 
 
-class FourierTransformer:
-    """A Fourier Transformer
-
-    Parameters
-    ----------
-    y : a pandas dataframe of shape = [n_samples, num_dims]
-        The training input samples.
-
-    Returns
-    -------
-    df: a pandas data frame of shape = [num_intervals, num_dims]
+class FourierTransformer(BaseEstimator, TransformerMixin):
+    """A Power-Spectrum Transformer
     """
 
-    def __init__(self):
-        pass
-
-    def fit(self, y):
+    def fit(self, X, y=None):
         """Fit
 
         Parameters
         ----------
-        y : a pandas dataframe of shape = [n_samples, num_dims]
-            The training input samples.
+        X : array-like
 
         Returns
         -------
-        df: a pandas data frame of shape = [num_intervals, num_dims]
+        self : a fitted instance of itself
         """
         pass
 
-    def transform(self, y):
-        """Transform
+    def transform(self, X, y=None):
+        """Apply power-spectrum transform over the columns
 
         Parameters
         ----------
-        y : a pandas dataframe of shape = [n_samples, num_dims]
-            The training input samples.
+        X : array-like
         
         Returns
         -------
-        df: a pandas data frame of shape = [num_intervals, num_dims]
+        Xt : array-like
+            Power spectrum of X
         """
-        pass
+
+        # YOUR CODE
+        raise NotImplementedError()
+    
+    def inverse_transform(self, X, y=None):
+        raise NotImplementedError()
 
 def powerspectrum(X):
     Xt = np.fft.fft(X)
     return np.abs(Xt) ** 2
+
