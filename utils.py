@@ -99,8 +99,14 @@ class FourierTransformer(BaseEstimator, TransformerMixin):
         Xt : array-like
             Power spectrum of X
         """
+
         # YOUR CODE
         raise NotImplementedError()
     
     def inverse_transform(self, X, y=None):
         raise NotImplementedError()
+
+def powerspectrum(X):
+    Xt = np.fft.fft(X)
+    return np.abs(Xt) ** 2
+
